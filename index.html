@@ -79,6 +79,18 @@ const now = new Date();
 let selAlbaDay = jsDayToAlba(now.getDay());
 let selHour = now.getHours();
 
+function nextDateForAlbaDay(albaDay) {
+  const today = new Date();
+  // Alba: 1=Mon..7=Sun → JS: 1=Mon..6=Sat,0=Sun
+  const targetJs = albaDay === 7 ? 0 : albaDay;
+  let diff = targetJs - today.getDay();
+  if (diff < 0) diff += 7;
+  if (diff === 0) return today.toISOString().slice(0, 10);
+  const d = new Date(today);
+  d.setDate(d.getDate() + diff);
+  return d.toISOString().slice(0, 10);
+}
+
 function getPrice(v) {
   const dayData = v.pricesByDay && v.pricesByDay[String(selAlbaDay)];
   if (!dayData) return null;
@@ -159,7 +171,7 @@ function markerHTML(v) {
 
 function mkPopup(v) {
   const addr = [v.address, v.postcode, v.postname].filter(Boolean).join(', ');
-  const bu = 'https://albaplay.com/venue/' + v.slug;
+  const bu = 'https://albaplay.com/venue/' + v.slug + '?date=' + nextDateForAlbaDay(selAlbaDay);
   const dayName = DAY_NAMES[selAlbaDay];
   const hourStr = String(selHour).padStart(2,'0') + ':00';
   const priceStr = v.price !== null ? v.price + ' NOK' : 'Ingen pris';
@@ -230,7 +242,7 @@ function renderList() {
   if (!filtered.length) { list.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--muted)">Ingen steder funnet</div>'; return; }
   list.innerHTML = filtered.map(v => {
     const addr = [v.postname, v.region].filter(Boolean).join(', ');
-    const bu = 'https://albaplay.com/venue/' + v.slug;
+    const bu = 'https://albaplay.com/venue/' + v.slug + '?date=' + nextDateForAlbaDay(selAlbaDay);
     const ph = v.price !== null
       ? '<div class="price-min">' + v.price + ' NOK</div>'
       : '<div class="no-price">Ingen pris</div>';
