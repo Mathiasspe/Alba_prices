@@ -79,16 +79,19 @@ const now = new Date();
 let selAlbaDay = jsDayToAlba(now.getDay());
 let selHour = now.getHours();
 
+function localDateStr(d) {
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
 function nextDateForAlbaDay(albaDay) {
   const today = new Date();
   // Alba: 1=Mon..7=Sun → JS: 1=Mon..6=Sat,0=Sun
   const targetJs = albaDay === 7 ? 0 : albaDay;
   let diff = targetJs - today.getDay();
   if (diff < 0) diff += 7;
-  if (diff === 0) return today.toISOString().slice(0, 10);
+  if (diff === 0) return localDateStr(today);
   const d = new Date(today);
   d.setDate(d.getDate() + diff);
-  return d.toISOString().slice(0, 10);
+  return localDateStr(d);
 }
 
 function getPrice(v) {
