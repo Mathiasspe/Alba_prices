@@ -9,15 +9,10 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-  :root {
-    --bg:#0e1c0e;--bg2:#152415;--bg3:#1d301d;--card:#1a2e1a;--border:#2a3f2a;
-    --accent:#d4e86a;--accent2:#b8d44a;--text:#f0f4e8;--muted:#7a9070;
-    --danger:#e86a6a;--success:#6ae8a0;
-  }
+  :root{--bg:#0e1c0e;--bg2:#152415;--bg3:#1d301d;--card:#1a2e1a;--border:#2a3f2a;--accent:#d4e86a;--accent2:#b8d44a;--text:#f0f4e8;--muted:#7a9070;--danger:#e86a6a;}
   *{margin:0;padding:0;box-sizing:border-box;}
   body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
 
-  /* LOADING */
   #loading-screen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;}
   #loading-screen.hidden{display:none;}
   .loading-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:2rem;color:var(--text);display:flex;align-items:center;gap:.75rem;}
@@ -25,17 +20,15 @@
   .loading-week{font-size:.78rem;color:var(--accent);background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:.3rem 1rem;}
   .progress-wrap{width:320px;background:var(--bg3);border-radius:20px;height:6px;overflow:hidden;border:1px solid var(--border);}
   .progress-bar{height:100%;background:var(--accent);border-radius:20px;transition:width .3s;width:0%;}
-  .progress-label{font-size:.75rem;color:var(--muted);text-align:center;}
+  .progress-label{font-size:.75rem;color:var(--muted);text-align:center;min-height:1.2em;}
   .loading-sub{font-size:.8rem;color:var(--muted);}
 
-  /* ERROR */
   #error-screen{position:fixed;inset:0;background:var(--bg);z-index:9998;display:none;flex-direction:column;align-items:center;justify-content:center;gap:1rem;}
   #error-screen.visible{display:flex;}
   .error-title{font-family:'Syne',sans-serif;font-size:1.2rem;color:var(--danger);}
-  .error-msg{font-size:.85rem;color:var(--muted);max-width:400px;text-align:center;}
+  .error-msg{font-size:.85rem;color:var(--muted);max-width:440px;text-align:center;line-height:1.6;}
   .retry-btn{background:var(--accent);color:var(--bg);border:none;padding:.6rem 1.5rem;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;font-size:.85rem;}
 
-  /* HEADER */
   header{background:var(--bg);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:1.5rem;height:56px;position:sticky;top:0;z-index:1000;}
   .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;color:var(--text);display:flex;align-items:center;gap:.5rem;}
   .logo-icon{width:28px;height:28px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--bg);}
@@ -49,14 +42,12 @@
   .refresh-btn.spinning svg{animation:spin 1s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
 
-  /* LAYOUT */
   .layout{display:grid;grid-template-columns:420px 1fr;height:calc(100vh - 56px);}
 
-  /* PANEL */
   .panel{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
   .panel-header{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:.8rem;}
   .panel-title{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:var(--text);display:flex;align-items:center;justify-content:space-between;}
-  .count-badge{background:var(--bg3);border:1px solid var(--border);color:var(--accent);font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;padding:.2rem .6rem;border-radius:20px;}
+  .count-badge{background:var(--bg3);border:1px solid var(--border);color:var(--accent);font-size:.75rem;font-weight:500;padding:.2rem .6rem;border-radius:20px;}
   .search-wrap{position:relative;}
   .search-wrap svg{position:absolute;left:.8rem;top:50%;transform:translateY(-50%);color:var(--muted);}
   input[type=text]{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.6rem .8rem .6rem 2.4rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none;transition:border-color .2s;}
@@ -68,7 +59,6 @@
   .sort-row{display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--muted);}
   select{background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.75rem;padding:.3rem .6rem;border-radius:6px;outline:none;cursor:pointer;}
 
-  /* LIST */
   .venue-list{overflow-y:auto;flex:1;padding:.5rem;}
   .venue-list::-webkit-scrollbar{width:4px;}
   .venue-list::-webkit-scrollbar-track{background:transparent;}
@@ -85,7 +75,6 @@
   .price-same{font-size:.7rem;color:#5a7a5a;}
   .no-price{font-size:.72rem;color:var(--muted);font-style:italic;}
 
-  /* MAP */
   .map-container{position:relative;display:flex;flex-direction:column;}
   #map{flex:1;background:var(--bg);}
   .map-controls{position:absolute;top:1rem;right:1rem;z-index:500;display:flex;flex-direction:column;gap:.5rem;}
@@ -93,7 +82,6 @@
   .map-btn:hover{background:var(--bg3);border-color:var(--accent);}
   .map-btn.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:600;}
 
-  /* SELECTION */
   .selection-panel{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,var(--bg) 80%,transparent);padding:1.5rem;z-index:500;display:none;}
   .selection-panel.visible{display:block;}
   .selection-inner{background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
@@ -105,7 +93,6 @@
   .draw-hint{position:absolute;top:1rem;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--accent);border-radius:20px;padding:.4rem 1rem;font-size:.78rem;color:var(--accent);z-index:500;pointer-events:none;opacity:0;transition:opacity .3s;}
   .draw-hint.visible{opacity:1;}
 
-  /* Leaflet */
   .leaflet-container{background:#1a2a1a !important;}
   .leaflet-tile-pane{filter:brightness(.7) saturate(.6) hue-rotate(80deg);}
   .custom-marker{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:.58rem;font-weight:800;cursor:pointer;transition:all .15s;box-shadow:0 2px 8px rgba(0,0,0,.5);border:2px solid;}
@@ -161,8 +148,7 @@
         <input type="text" id="search" placeholder="Søk etter sted...">
       </div>
       <div class="filters" id="region-filters"></div>
-      <div class="sort-row">
-        Sorter:
+      <div class="sort-row">Sorter:
         <select id="sort">
           <option value="name">Navn</option>
           <option value="min-asc">Laveste pris ↑</option>
@@ -199,7 +185,7 @@
 </div>
 
 <script>
-// ── Week helpers ─────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 function getWeekNumber(d) {
   const dt = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
   dt.setUTCDate(dt.getUTCDate() + 4 - (dt.getUTCDay() || 7));
@@ -207,16 +193,9 @@ function getWeekNumber(d) {
   return Math.ceil((((dt - y) / 86400000) + 1) / 7);
 }
 
-function getThisWeekAlbaKeys() {
-  // Returns ["1","2","3","4","5","6","7"] = Mon–Sun for current week
-  // Alba: 1=Mon...7=Sun. All days of the week are always present.
-  return ["1","2","3","4","5","6","7"];
-}
-
 function weekMinMax(pricesByDay) {
-  const keys = getThisWeekAlbaKeys();
   let prices = [];
-  for (const k of keys) {
+  for (const k of ["1","2","3","4","5","6","7"]) {
     if (pricesByDay[k]) prices = prices.concat(Object.values(pricesByDay[k]).filter(p => typeof p === 'number'));
   }
   if (!prices.length) return { min: null, max: null };
@@ -234,30 +213,32 @@ function formatWeekLabel() {
   return `Uke ${wk} · ${fmt(mon)}–${fmt(sun)}`;
 }
 
+// Detect if running from local file — if so, use CORS proxy
+function proxyUrl(url) {
+  return 'https://corsproxy.io/?' + encodeURIComponent(url);
+}
+
 // ── State ─────────────────────────────────────────────────────────────────────
 let VENUES = [], markers = {}, map;
 let filtered = [], selectedVenueId = null, selectedInArea = new Set();
 let drawMode = false, dragStartLL = null, selectionLayer = null;
 
 // ── Fetch ─────────────────────────────────────────────────────────────────────
-async function fetchVenues(silent = false) {
+async function fetchVenues(silent) {
   const setProgress = (pct, label) => {
     if (silent) return;
     document.getElementById('progress-bar').style.width = pct + '%';
     document.getElementById('progress-label').textContent = label;
   };
 
-  if (!silent) {
-    document.getElementById('loading-week-label').textContent =
-      'Laster priser for ' + formatWeekLabel();
-  }
+  if (!silent) document.getElementById('loading-week-label').textContent = 'Laster priser for ' + formatWeekLabel();
 
   setProgress(5, 'Henter venue-liste fra albaplay.com...');
 
-  const pageResp = await fetch('https://albaplay.com/venue');
+  const pageResp = await fetch(proxyUrl('https://albaplay.com/venue'));
   const html = await pageResp.text();
   const match = html.match(/<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/);
-  if (!match) throw new Error('Fant ikke __NEXT_DATA__ på albaplay.com/venue – siden kan ha endret seg.');
+  if (!match) throw new Error('Fant ikke __NEXT_DATA__ – albaplay.com kan ha endret struktur.');
 
   const nextData = JSON.parse(match[1]);
   const buildId = nextData.buildId;
@@ -280,13 +261,13 @@ async function fetchVenues(silent = false) {
 
   setProgress(10, `Fant ${unique.length} venues. Henter priser...`);
 
-  const BATCH = 12;
+  const BATCH = 40;
   const results = [];
   for (let i = 0; i < unique.length; i += BATCH) {
     const batch = unique.slice(i, i + BATCH);
     const fetched = await Promise.all(batch.map(async v => {
       try {
-        const url = `https://albaplay.com/_next/data/${buildId}/no/venue/${v.slug}.json?locationSlug=${v.slug}`;
+        const url = proxyUrl(`https://albaplay.com/_next/data/${buildId}/no/venue/${v.slug}.json?locationSlug=${v.slug}`);
         const r = await fetch(url);
         const json = await r.json();
         let pricesByDay = null;
@@ -317,7 +298,7 @@ async function loadData() {
     VENUES = await fetchVenues(false);
     await new Promise(r => setTimeout(r, 300));
     return true;
-  } catch (e) {
+  } catch(e) {
     document.getElementById('error-msg').textContent = e.message;
     document.getElementById('error-screen').classList.add('visible');
     return false;
@@ -343,30 +324,26 @@ async function refreshData() {
 // ── Map ───────────────────────────────────────────────────────────────────────
 function initMap() {
   map = L.map('map', { zoomControl:true }).setView([62.5, 10.5], 5);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution:'© OpenStreetMap'
-  }).addTo(map);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'© OpenStreetMap' }).addTo(map);
   setupDrawing();
 }
 
-function priceColor(minPrice) {
-  if (!minPrice) return { border:'#3a5a3a', bg:'#1a2e1a', text:'#5a7a5a' };
-  if (minPrice < 200) return { border:'#6ae8a0', bg:'#1a3a2a', text:'#6ae8a0' };
-  if (minPrice < 300) return { border:'#d4e86a', bg:'#2a3a1a', text:'#d4e86a' };
-  if (minPrice < 400) return { border:'#e8c46a', bg:'#3a2e1a', text:'#e8c46a' };
+function priceColor(p) {
+  if (!p) return { border:'#3a5a3a', bg:'#1a2e1a', text:'#5a7a5a' };
+  if (p < 200) return { border:'#6ae8a0', bg:'#1a3a2a', text:'#6ae8a0' };
+  if (p < 300) return { border:'#d4e86a', bg:'#2a3a1a', text:'#d4e86a' };
+  if (p < 400) return { border:'#e8c46a', bg:'#3a2e1a', text:'#e8c46a' };
   return { border:'#e86a6a', bg:'#3a1a1a', text:'#e86a6a' };
 }
 
 function makePopup(v) {
   const addr = [v.address, v.postcode, v.postname].filter(Boolean).join(', ');
   return `<div class="popup-name">${v.name}</div>
-    <div class="popup-addr">${addr || '–'}</div>
+    <div class="popup-addr">${addr||'–'}</div>
     <div class="popup-week">📅 ${formatWeekLabel()}</div>
     <div class="popup-price">
-      <span class="popup-price-min">${v.minPrice ?? '–'} NOK</span>
-      ${v.maxPrice && v.maxPrice !== v.minPrice
-        ? `<span class="popup-price-range">– ${v.maxPrice} NOK</span>`
-        : v.minPrice ? `<span class="popup-price-range">· fast pris</span>` : ''}
+      <span class="popup-price-min">${v.minPrice??'–'} NOK</span>
+      ${v.maxPrice&&v.maxPrice!==v.minPrice?`<span class="popup-price-range">– ${v.maxPrice} NOK</span>`:v.minPrice?`<span class="popup-price-range">· fast pris</span>`:''}
     </div>`;
 }
 
@@ -374,33 +351,31 @@ function addMarkersToMap() {
   VENUES.forEach(v => {
     if (!v.lat || !v.lng) return;
     const c = priceColor(v.minPrice);
-    const lbl = v.minPrice ? String(v.minPrice) : '?';
     const icon = L.divIcon({
       className:'',
-      html:`<div class="custom-marker" style="background:${c.bg};border-color:${c.border};color:${c.text}">${lbl}</div>`,
+      html:`<div class="custom-marker" style="background:${c.bg};border-color:${c.border};color:${c.text}">${v.minPrice??'?'}</div>`,
       iconSize:[36,36], iconAnchor:[18,18]
     });
-    const m = L.marker([v.lat, v.lng], { icon }).addTo(map);
+    const m = L.marker([v.lat,v.lng],{icon}).addTo(map);
     m.bindPopup(makePopup(v));
     m.on('click', () => selectVenue(v.id));
     markers[v.id] = m;
   });
 }
 
-// ── Filters & list ────────────────────────────────────────────────────────────
+// ── UI ────────────────────────────────────────────────────────────────────────
 function buildRegionFilters() {
-  const regions = ['all', ...new Set(VENUES.map(v=>v.region).filter(Boolean).sort())];
+  const regions = ['all',...new Set(VENUES.map(v=>v.region).filter(Boolean).sort())];
   const el = document.getElementById('region-filters');
   el.innerHTML = '';
   regions.forEach(r => {
     const btn = document.createElement('button');
-    btn.className = 'filter-btn' + (r==='all'?' active':'');
+    btn.className = 'filter-btn'+(r==='all'?' active':'');
     btn.dataset.region = r;
-    btn.textContent = r==='all' ? 'Alle' : r;
-    btn.addEventListener('click', () => {
+    btn.textContent = r==='all'?'Alle':r;
+    btn.addEventListener('click',()=>{
       document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      applyFilters();
+      btn.classList.add('active'); applyFilters();
     });
     el.appendChild(btn);
   });
@@ -411,9 +386,8 @@ function updateHeaderStats() {
   document.getElementById('stat-total').textContent = VENUES.length;
   document.getElementById('week-badge').textContent = formatWeekLabel();
   if (wp.length) {
-    const avg = Math.round(wp.reduce((s,v)=>s+v.minPrice,0)/wp.length);
     const mins = wp.map(v=>v.minPrice);
-    document.getElementById('stat-avg-min').textContent = avg;
+    document.getElementById('stat-avg-min').textContent = Math.round(mins.reduce((a,b)=>a+b,0)/mins.length);
     document.getElementById('stat-range').textContent = Math.min(...mins)+'–'+Math.max(...mins);
   }
 }
@@ -421,20 +395,13 @@ function updateHeaderStats() {
 function renderList() {
   const list = document.getElementById('venue-list');
   document.getElementById('list-count').textContent = filtered.length;
-  if (!filtered.length) {
-    list.innerHTML='<div style="padding:2rem;text-align:center;color:var(--muted);font-size:.85rem;">Ingen steder funnet</div>';
-    return;
-  }
+  if (!filtered.length) { list.innerHTML='<div style="padding:2rem;text-align:center;color:var(--muted);font-size:.85rem;">Ingen steder funnet</div>'; return; }
   list.innerHTML = filtered.map(v => {
-    const addr = [v.postname, v.region].filter(Boolean).join(', ');
+    const addr = [v.postname,v.region].filter(Boolean).join(', ');
     const ph = v.minPrice
-      ? `<div class="price-min">${v.minPrice} NOK</div>
-         ${v.maxPrice&&v.maxPrice!==v.minPrice
-           ?`<div class="price-max">maks ${v.maxPrice} NOK</div>`
-           :`<div class="price-same">fast pris</div>`}`
+      ? `<div class="price-min">${v.minPrice} NOK</div>${v.maxPrice&&v.maxPrice!==v.minPrice?`<div class="price-max">maks ${v.maxPrice} NOK</div>`:`<div class="price-same">fast pris</div>`}`
       : `<div class="no-price">Ingen pris</div>`;
-    return `<div class="venue-card${v.id===selectedVenueId?' selected':''}${selectedInArea.has(v.id)?' in-selection':''}"
-         onclick="selectVenue('${v.id}')" data-id="${v.id}">
+    return `<div class="venue-card${v.id===selectedVenueId?' selected':''}${selectedInArea.has(v.id)?' in-selection':''}" onclick="selectVenue('${v.id}')" data-id="${v.id}">
       <div><div class="venue-name">${v.name}</div><div class="venue-location">${addr||'–'}</div></div>
       <div class="price-tag">${ph}</div>
     </div>`;
@@ -443,11 +410,11 @@ function renderList() {
 
 function applyFilters() {
   const q = document.getElementById('search').value.toLowerCase();
-  const region = document.querySelector('.filter-btn.active')?.dataset.region || 'all';
+  const region = document.querySelector('.filter-btn.active')?.dataset.region||'all';
   const sort = document.getElementById('sort').value;
-  filtered = VENUES.filter(v =>
-    (!q || v.name.toLowerCase().includes(q) || v.address.toLowerCase().includes(q) || v.region.toLowerCase().includes(q)) &&
-    (region==='all' || v.region===region)
+  filtered = VENUES.filter(v=>
+    (!q||v.name.toLowerCase().includes(q)||v.address.toLowerCase().includes(q)||v.region.toLowerCase().includes(q))&&
+    (region==='all'||v.region===region)
   );
   filtered.sort((a,b)=>{
     if(sort==='name') return a.name.localeCompare(b.name,'no');
@@ -466,56 +433,48 @@ function selectVenue(id) {
   selectedVenueId = id;
   renderList();
   const v = VENUES.find(x=>x.id===id);
-  if (v?.lat && v?.lng) { map.setView([v.lat,v.lng],13,{animate:true}); markers[id]?.openPopup(); }
+  if (v?.lat&&v?.lng) { map.setView([v.lat,v.lng],13,{animate:true}); markers[id]?.openPopup(); }
   document.querySelector(`[data-id="${id}"]`)?.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-// ── Drawing ────────────────────────────────────────────────────────────────────
+// ── Drawing ───────────────────────────────────────────────────────────────────
 function setupDrawing() {
-  document.getElementById('btn-select-area').addEventListener('click', () => {
-    drawMode = !drawMode;
-    const btn = document.getElementById('btn-select-area');
-    const hint = document.getElementById('draw-hint');
-    if (drawMode) {
-      btn.classList.add('active'); btn.textContent='⬚ Velger...';
-      hint.classList.add('visible');
-      map.getContainer().style.cursor='crosshair';
-      map.dragging.disable();
-    } else { exitDrawMode(); }
+  document.getElementById('btn-select-area').addEventListener('click',()=>{
+    drawMode=!drawMode;
+    const btn=document.getElementById('btn-select-area');
+    const hint=document.getElementById('draw-hint');
+    if(drawMode){btn.classList.add('active');btn.textContent='⬚ Velger...';hint.classList.add('visible');map.getContainer().style.cursor='crosshair';map.dragging.disable();}
+    else exitDrawMode();
   });
-
-  map.on('mousedown', e => { if(drawMode) dragStartLL=e.latlng; });
-  map.on('mousemove', e => {
-    if(!drawMode||!dragStartLL) return;
-    if(selectionLayer) map.removeLayer(selectionLayer);
-    selectionLayer = L.rectangle(L.latLngBounds(dragStartLL,e.latlng),
-      {color:'#d4e86a',weight:2,opacity:.9,fillColor:'#d4e86a',fillOpacity:.1,dashArray:'5,5'}).addTo(map);
+  map.on('mousedown',e=>{if(drawMode)dragStartLL=e.latlng;});
+  map.on('mousemove',e=>{
+    if(!drawMode||!dragStartLL)return;
+    if(selectionLayer)map.removeLayer(selectionLayer);
+    selectionLayer=L.rectangle(L.latLngBounds(dragStartLL,e.latlng),{color:'#d4e86a',weight:2,opacity:.9,fillColor:'#d4e86a',fillOpacity:.1,dashArray:'5,5'}).addTo(map);
   });
-  map.on('mouseup', e => {
-    if(!drawMode||!dragStartLL) return;
-    const bounds = L.latLngBounds(dragStartLL,e.latlng);
-    dragStartLL = null; exitDrawMode();
-    const inB = VENUES.filter(v=>v.lat&&v.lng&&bounds.contains([v.lat,v.lng]));
-    selectedInArea = new Set(inB.map(v=>v.id));
-    updateSelectionPanel(inB); renderList();
-    document.getElementById('btn-clear-selection').style.display = inB.length?'block':'none';
+  map.on('mouseup',e=>{
+    if(!drawMode||!dragStartLL)return;
+    const bounds=L.latLngBounds(dragStartLL,e.latlng);
+    dragStartLL=null;exitDrawMode();
+    const inB=VENUES.filter(v=>v.lat&&v.lng&&bounds.contains([v.lat,v.lng]));
+    selectedInArea=new Set(inB.map(v=>v.id));
+    updateSelectionPanel(inB);renderList();
+    document.getElementById('btn-clear-selection').style.display=inB.length?'block':'none';
   });
-
-  document.getElementById('btn-clear-selection').addEventListener('click', clearSelection);
-  document.getElementById('clear-sel-btn').addEventListener('click', clearSelection);
+  document.getElementById('btn-clear-selection').addEventListener('click',clearSelection);
+  document.getElementById('clear-sel-btn').addEventListener('click',clearSelection);
 }
 
-function exitDrawMode() {
+function exitDrawMode(){
   drawMode=false;
   document.getElementById('btn-select-area').classList.remove('active');
   document.getElementById('btn-select-area').textContent='⬚ Velg område';
   document.getElementById('draw-hint').classList.remove('visible');
-  map.getContainer().style.cursor='';
-  map.dragging.enable();
+  map.getContainer().style.cursor='';map.dragging.enable();
 }
 
-function updateSelectionPanel(venues) {
-  const panel = document.getElementById('selection-panel');
+function updateSelectionPanel(venues){
+  const panel=document.getElementById('selection-panel');
   if(!venues.length){panel.classList.remove('visible');return;}
   panel.classList.add('visible');
   document.getElementById('sel-count').textContent=venues.length;
@@ -527,7 +486,7 @@ function updateSelectionPanel(venues) {
   }
 }
 
-function clearSelection() {
+function clearSelection(){
   selectedInArea=new Set();
   if(selectionLayer){map.removeLayer(selectionLayer);selectionLayer=null;}
   document.getElementById('selection-panel').classList.remove('visible');
@@ -538,8 +497,8 @@ function clearSelection() {
 // ── Boot ──────────────────────────────────────────────────────────────────────
 (async()=>{
   initMap();
-  const ok = await loadData();
-  if(!ok) return;
+  const ok=await loadData();
+  if(!ok)return;
   document.getElementById('loading-screen').classList.add('hidden');
   filtered=[...VENUES];
   addMarkersToMap();
