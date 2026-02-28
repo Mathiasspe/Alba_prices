@@ -76,7 +76,7 @@ const RAW_VENUES = JSON.parse(document.getElementById('venue-data').textContent)
 // JS day: 0=Sun,1=Mon,...,6=Sat →  day keys: 1=Mon,...,7=Sun
 function jsDayTo(d) { return d === 0 ? 7 : d; }
 const now = new Date();
-let selAlbaDay = jsDayToAlba(now.getDay());
+let selAlbaDay = jsDayTo(now.getDay());
 let selHour = now.getHours();
 
 function localDateStr(d) {
