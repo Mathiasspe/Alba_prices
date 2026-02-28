@@ -158,6 +158,7 @@ function updateTimeBadge() {
 
 // --- Map ---
 let markers = {}, map, filtered = [], selV = null, selArea = new Set(), drawMode = false, dragStart = null, selLayer = null;
+let selectedRegions = new Set();
 
 function pColor(p) {
   if (p === null) return {b:'#3a5a3a', bg:'#1a2e1a', t:'#5a7a5a'};
@@ -216,14 +217,29 @@ function buildFilters() {
   el.innerHTML = '';
   rs.forEach(r => {
     const b = document.createElement('button');
-    b.className = 'filter-btn' + (r === 'all' ? ' active' : '');
     b.dataset.region = r;
     b.textContent = r === 'all' ? 'Alle' : r;
     b.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach(x => x.classList.remove('active'));
-      b.classList.add('active');
+      if (r === 'all') {
+        selectedRegions.clear();
+      } else {
+        if (selectedRegions.has(r)) {
+          selectedRegions.delete(r);
+        } else {
+          selectedRegions.add(r);
+        }
+      }
+      document.querySelectorAll('.filter-btn').forEach(x => {
+        const reg = x.dataset.region;
+        if (reg === 'all') {
+          x.classList.toggle('active', selectedRegions.size === 0);
+        } else {
+          x.classList.toggle('active', selectedRegions.has(reg));
+        }
+      });
       applyF();
     });
+    b.className = 'filter-btn' + (r === 'all' ? ' active' : '');
     el.appendChild(b);
   });
 }
@@ -259,11 +275,10 @@ function renderList() {
 
 function applyF() {
   const q = document.getElementById('search').value.toLowerCase();
-  const r = document.querySelector('.filter-btn.active')?.dataset.region || 'all';
   const s = document.getElementById('sort').value;
   filtered = VENUES.filter(v =>
     (!q || v.name.toLowerCase().includes(q) || (v.address||'').toLowerCase().includes(q) || (v.region||'').toLowerCase().includes(q)) &&
-    (r === 'all' || v.region === r)
+    (selectedRegions.size === 0 || selectedRegions.has(v.region))
   );
   filtered.sort((a, b) => {
     if (s === 'name') return a.name.localeCompare(b.name, 'no');
