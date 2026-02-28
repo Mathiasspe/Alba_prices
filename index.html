@@ -167,7 +167,7 @@ function updateTimeBadge() {
 // --- Availability ---
 const availCache = new Map();
 // Sett denne til din Cloudflare Worker URL (se worker.js for deploy-instruksjoner)
-const AVAIL_API = 'https://alba-avail-proxy.YOUR_SUBDOMAIN.workers.dev';
+const AVAIL_API = 'https://alba-avail-proxy.matspe97.workers.dev/';
 const AVAIL_QUERY = '{locationBySlugForCalendar(slug:"%SLUG%",date:"%DATE%",resourceType:SIM){locationCalendar{resourceWithCalendar{slots{startTime availability{state}}}}}}';
 
 async function fetchVenueAvail(slug, date) {
