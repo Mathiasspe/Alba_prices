@@ -1,6 +1,6 @@
 # Alba Venue Price Dashboard
 
-Et interaktivt dashboard for å sammenligne priser og tilgjengelighet på padelbaner fra [Alba](https://albaplay.com) i Norge.
+Et interaktivt dashboard for å sammenligne priser og tilgjengelighet på golfsimulatorer fra [Alba](https://albaplay.com) i Norge.
 
 ## Funksjoner
 
