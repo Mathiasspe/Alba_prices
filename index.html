@@ -168,8 +168,9 @@ function updateTimeBadge() {
 const availCache = new Map();
 const AVAIL_CONCURRENCY = 6;
 const AVAIL_QUERY = '{locationBySlugForCalendar(slug:"%SLUG%",date:"%DATE%",resourceType:SIM){locationCalendar{resourceWithCalendar{slots{startTime availability{state}}}}}}';
+let availAbort = null;
 
-async function fetchVenueAvail(slug, date) {
+async function fetchVenueAvail(slug, date, signal) {
   const key = slug + ':' + date;
   if (availCache.has(key)) return availCache.get(key);
   try {
@@ -177,7 +178,8 @@ async function fetchVenueAvail(slug, date) {
     const res = await fetch('https://api.albaplay.com/graphql', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({query: q})
+      body: JSON.stringify({query: q}),
+      signal: signal
     });
     const json = await res.json();
     const resources = json?.data?.locationBySlugForCalendar?.locationCalendar?.resourceWithCalendar || [];
@@ -192,17 +194,18 @@ async function fetchVenueAvail(slug, date) {
     });
     availCache.set(key, hourMap);
     return hourMap;
-  } catch(e) { return null; }
+  } catch(e) { if (e.name === 'AbortError') return null; return null; }
 }
 
-async function fetchAllAvail(venues, date) {
+async function fetchAllAvail(venues, date, signal) {
   let i = 0;
   async function worker() {
     while (i < venues.length) {
+      if (signal?.aborted) return;
       const v = venues[i++];
       const key = v.slug + ':' + date;
       if (availCache.has(key)) { updateCardAvail(v); continue; }
-      await fetchVenueAvail(v.slug, date);
+      await fetchVenueAvail(v.slug, date, signal);
       updateCardAvail(v);
     }
   }
@@ -230,14 +233,15 @@ function availChipsHTML(v) {
 
 function updateCardAvail(v) {
   const card = document.querySelector('.venue-card[data-id="' + v.id + '"]');
-  if (!card) return;
-  const el = card.querySelector('.avail-chips');
-  if (el) el.innerHTML = availChipsHTML(v);
+  if (card) { const el = card.querySelector('.avail-chips'); if (el) el.innerHTML = availChipsHTML(v); }
+  if (!isMobile && markers[v.id]) markers[v.id].setPopupContent(mkPopup(v));
 }
 
 function refreshAvail() {
+  if (availAbort) availAbort.abort();
+  availAbort = new AbortController();
   const date = nextDateForAlbaDay(selAlbaDay);
-  fetchAllAvail(filtered, date);
+  fetchAllAvail(filtered, date, availAbort.signal);
 }
 
 // --- Map ---
@@ -384,7 +388,13 @@ function selVenue(id) {
   renderList();
   if (!isMobile) {
     const v = VENUES.find(x => x.id === id);
-    if (v?.lat && v?.lng) { map.setView([v.lat, v.lng], 13, {animate:true}); markers[id]?.openPopup(); }
+    if (v?.lat && v?.lng) {
+      map.setView([v.lat, v.lng], 13, {animate:true}); markers[id]?.openPopup();
+      const date = nextDateForAlbaDay(selAlbaDay);
+      if (!availCache.has(v.slug + ':' + date)) {
+        fetchVenueAvail(v.slug, date).then(() => { if (markers[id]) markers[id].setPopupContent(mkPopup(v)); });
+      }
+    }
   }
   document.querySelector('[data-id="' + id + '"]')?.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
