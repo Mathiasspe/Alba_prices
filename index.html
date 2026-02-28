@@ -166,8 +166,9 @@ function updateTimeBadge() {
 
 // --- Availability ---
 const availCache = new Map();
-// Change this to your deployed Cloudflare Worker URL (see worker.js)
-const AVAIL_API = 'https://alba-avail-proxy.YOUR_SUBDOMAIN.workers.dev';
+// Set this to your Firebase Function URL after deploy:
+// firebase deploy --only functions → copy the albaAvail URL
+const AVAIL_API = 'https://YOUR_REGION-YOUR_PROJECT.cloudfunctions.net/albaAvail';
 const AVAIL_QUERY = '{locationBySlugForCalendar(slug:"%SLUG%",date:"%DATE%",resourceType:SIM){locationCalendar{resourceWithCalendar{slots{startTime availability{state}}}}}}';
 
 async function fetchVenueAvail(slug, date) {
