@@ -1,9 +1,0 @@
-{
-  "name": "alba-avail-proxy",
-  "description": "CORS proxy for Alba availability API",
-  "engines": { "node": "20" },
-  "main": "index.js",
-  "dependencies": {
-    "firebase-functions": "^6.0.0"
-  }
-}
