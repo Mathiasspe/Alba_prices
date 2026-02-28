@@ -106,7 +106,13 @@ function computePrices() {
   VENUES.forEach(v => { v.price = getPrice(v); });
 }
 
-const VENUES = RAW_VENUES.map(v => ({...v, price: null}));
+const REGION_MAP = {
+  'Buskerud fylke': 'Buskerud',
+  'Telemark fylke': 'Telemark',
+  'Møre og Romsdal fylkeskommune': 'Møre og Romsdal',
+  'Rogaland fylkeskommune': 'Rogaland'
+};
+const VENUES = RAW_VENUES.map(v => ({...v, price: null, region: REGION_MAP[v.region] || v.region}));
 computePrices();
 
 const isMobile = window.matchMedia('(max-width:768px)').matches;
@@ -218,7 +224,7 @@ function buildFilters() {
   rs.forEach(r => {
     const b = document.createElement('button');
     b.dataset.region = r;
-    b.textContent = r === 'all' ? 'Alle' : r;
+    b.textContent = r === 'all' ? 'Nullstill' : r;
     b.addEventListener('click', () => {
       if (r === 'all') {
         selectedRegions.clear();
